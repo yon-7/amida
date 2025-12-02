@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>あみだくじアプリ</title>
     
-    <!-- アイコン -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><rect width=%2264%22 height=%2264%22 fill=%22%23007bff%22 rx=%2212%22/><path d=%22M18 12v40M32 12v40M46 12v40M18 24h14M32 36h14M18 48h14%22 stroke=%22white%22 stroke-width=%224%22 stroke-linecap=%22round%22/></svg>">
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><rect width=%2264%22 height=%2264%22 fill=%22%23007bff%22 rx=%2212%22/><path d=%22M18 12v40M32 12v40M46 12v40M18 24h14M32 36h14M18 48h14%22 stroke=%22white%22 stroke-width=%224%22 stroke-linecap=%22round%22/></svg>">
 
     <style>
-        /* CSS */
         body { 
             font-family: "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif; 
             text-align: center; 
@@ -21,41 +19,27 @@
         }
         h1 { margin: 5px 0 15px 0; font-size: 20px; font-weight: bold; }
         
-        /* コンテナ */
         #setup-area, #game-area { 
-            margin: 0 auto; 
-            width: 100%; 
-            max-width: 600px; 
-            background: white; 
-            padding: 15px; 
-            border-radius: 12px; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
-            border: 1px solid #eee; 
+            margin: 0 auto; width: 100%; max-width: 600px; 
+            background: white; padding: 15px; border-radius: 12px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); border: 1px solid #eee; 
             box-sizing: border-box; 
         }
         .hidden { display: none; }
         
-        /* 見出し */
-        label.section-title { 
-            font-weight: bold; display: block; margin-top: 20px; text-align: left; margin-left: 2%; font-size: 15px; 
-        }
+        label.section-title { font-weight: bold; display: block; margin-top: 20px; text-align: left; margin-left: 2%; font-size: 15px; }
         label.section-title:first-child { margin-top: 0; }
         
         .small-size { font-size: 0.85em; font-weight: normal; color: #666; }
 
-        /* ラジオボタン */
-        label.radio-option { 
-            display: block; font-weight: normal; margin-bottom: 8px; cursor: pointer; font-size: 14px;
-        }
+        label.radio-option { display: block; font-weight: normal; margin-bottom: 8px; cursor: pointer; font-size: 14px; }
         @media (min-width: 400px) {
             label.radio-option { display: inline-block; margin-right: 15px; margin-bottom: 0; }
         }
 
-        /* 入力要素 */
         input[type="number"] { padding: 8px; width: 60px; text-align: center; font-size: 16px; border: 1px solid #ccc; border-radius: 6px; }
         textarea { width: 95%; height: 80px; padding: 10px; margin: 5px 0; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; resize: vertical; }
         
-        /* ボタン */
         button { 
             padding: 10px 15px; background-color: #333; color: white; border: none; border-radius: 6px; 
             cursor: pointer; font-size: 14px; margin: 5px 2px; font-weight: bold; transition: opacity 0.2s;
@@ -67,54 +51,35 @@
         button.shuffle-btn { background-color: #ff9800; font-size: 13px; padding: 6px 12px; min-height: 35px; } 
         button.secondary { background-color: #999; }
         
-        #btn-lock { background-color: #28a745; min-width: 140px; }
-        #btn-lock.locked { background-color: #dc3545; }
+        /* ロックボタン */
+        #btn-lock { background-color: #28a745; min-width: 150px; }
+        /* ロック時はグレーアウト */
+        #btn-lock.locked { background-color: #6c757d; cursor: default; opacity: 0.8; }
 
-        /* ヒント */
         .hint-container {
-            background: #f8f9fa;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            text-align: left;
+            background: #f8f9fa; padding: 10px; border-radius: 8px; 
+            margin-bottom: 5px; text-align: left;
         }
-        .hint-item {
-            display: flex;
-            align-items: center;
-            font-size: 13px;
-            color: #555;
-            margin-bottom: 4px;
-            line-height: 1.4;
-        }
-        .hint-icon {
-            font-size: 16px;
-            margin-right: 8px;
-            min-width: 20px;
-            text-align: center;
-        }
+        .hint-item { display: flex; align-items: center; font-size: 13px; color: #555; margin-bottom: 4px; line-height: 1.4; }
+        .hint-icon { font-size: 16px; margin-right: 8px; min-width: 20px; text-align: center; }
 
-        /* キャンバス */
         #canvas-container { 
             position: relative; 
-            margin: 10px auto; 
+            margin: 30px auto 10px auto; 
             width: 100%; 
-            overflow: hidden; 
         }
         canvas { 
-            touch-action: none; 
-            cursor: pointer; 
-            background: #fff; 
-            display: block; 
-            margin: 0 auto; 
+            touch-action: none; cursor: pointer; background: #fff; 
+            display: block; margin: 0 auto; max-width: 100%;
         }
         canvas.locked { cursor: default; }
 
-        /* 名前入力 */
+        /* 名前入力（位置はそのまま） */
         .name-input {
-            position: absolute; top: 5px; 
+            position: absolute; top: -25px; 
             padding: 2px; font-size: 11px; 
             text-align: center; border: 1px solid #ccc; border-radius: 4px; background: #fff;
-            height: 20px;
+            height: 20px; z-index: 10;
         }
         .name-input::placeholder { color: #ccc; }
         
@@ -125,7 +90,6 @@
 
     <h1>あみだくじ</h1>
 
-    <!-- 設定 -->
     <div id="setup-area">
         <label class="section-title">参加人数 <span class="small-size">(2〜10人)</span></label>
         <div class="setup-indent" style="margin-top: 5px;">
@@ -144,13 +108,11 @@
             </label>
         </div>
 
-        <!-- あたりの数 -->
         <div id="input-mode-count" class="setup-indent">
             <br>あたりの数: <input type="number" id="num-winners" value="1" min="1" max="10"> 本<br>
             <small style="color:#666;">※残りは自動的に「はずれ」になります</small>
         </div>
 
-        <!-- カスタム -->
         <div id="input-mode-custom" class="hidden setup-indent">
             <textarea id="result-options" placeholder="あたり&#13;&#10;はずれ&#13;&#10;..." onfocus="this.placeholder=''" onblur="if(this.value=='')this.placeholder='あたり\nはずれ\n...'"></textarea><br>
             <button class="shuffle-btn" onclick="shuffleInput()">🔀 内容をシャッフル</button><br>
@@ -163,7 +125,6 @@
         <button onclick="initGame()" style="width: 100%; max-width: 300px; background-color: #007bff;">作成する</button>
     </div>
 
-    <!-- ゲーム -->
     <div id="game-area" class="hidden">
         <div class="hint-container">
             <div class="hint-item"><span class="hint-icon">✏️</span><span>枠に<b>名前を入力</b></span></div>
@@ -178,21 +139,21 @@
         </div>
         
         <div style="margin-top: 15px;">
-            <button id="btn-lock" onclick="toggleLock()">🔓 線をロック</button>
-            <button id="btn-reset" class="secondary" onclick="resetLines()">線を消す</button>
+            <button id="btn-lock" onclick="toggleLock()">🔓 横線をロックする</button>
+            <button id="btn-undo" class="secondary" onclick="undoLine()">戻す</button>
             <button class="secondary" onclick="showSetup()">設定に戻る</button>
         </div>
     </div>
 
     <script>
-        // 変数
         const canvas = document.getElementById('amidaCanvas');
         const ctx = canvas.getContext('2d');
         const inputsLayer = document.getElementById('name-inputs-layer');
         const gameArea = document.getElementById('game-area');
         
-        let MARGIN_TOP = 80;
-        let START_BTN_Y = 55; 
+        // レイアウト変数
+        let MARGIN_TOP = 70;
+        let START_BTN_Y = 40; // 丸の位置を上に上げて名前欄に近づける
         let MARGIN_BOTTOM = 60;
         
         let participants = 4;
@@ -206,7 +167,6 @@
         let animX = 0, animY = 0; 
         let revealed = [];
 
-        // 設定操作
         function toggleMode(mode) {
             if (mode === 'count') {
                 document.getElementById('input-mode-count').classList.remove('hidden');
@@ -228,7 +188,6 @@
             ta.value = lines.join('\n');
         }
 
-        // 初期化
         function initGame() {
             participants = parseInt(document.getElementById('num-participants').value);
             if (participants < 2) participants = 2;
@@ -258,18 +217,19 @@
             document.getElementById('setup-area').classList.add('hidden');
             document.getElementById('game-area').classList.remove('hidden');
 
-            // サイズ調整
             const containerWidth = gameArea.clientWidth - 30; 
             const canvasWidth = Math.min(600, containerWidth);
-            const canvasHeight = Math.min(600, Math.max(400, window.innerHeight * 0.6));
+            const availableHeight = window.innerHeight * 0.7;
+            const canvasHeight = Math.min(800, Math.max(450, availableHeight));
             
             canvas.width = canvasWidth;
             canvas.height = canvasHeight;
             
+            // レイアウト調整（丸の位置を上に）
             if (canvasHeight < 500) {
-                MARGIN_TOP = 60; START_BTN_Y = 40; MARGIN_BOTTOM = 50;
+                MARGIN_TOP = 60; START_BTN_Y = 35; MARGIN_BOTTOM = 50;
             } else {
-                MARGIN_TOP = 80; START_BTN_Y = 55; MARGIN_BOTTOM = 60;
+                MARGIN_TOP = 75; START_BTN_Y = 45; MARGIN_BOTTOM = 60;
             }
             
             columnWidth = canvas.width / (participants + 1);
@@ -282,37 +242,40 @@
             document.getElementById('game-area').classList.add('hidden');
         }
 
-        // ロック
         function toggleLock() {
             if (isLocked) return; 
-            if (confirm('線をロックしますか？\nこれ以降、線の追加・削除はできません。')) {
-                isLocked = true;
-                updateLockUI();
-            }
+            isLocked = true;
+            updateLockUI();
         }
 
         function updateLockUI() {
             const btnLock = document.getElementById('btn-lock');
-            const btnReset = document.getElementById('btn-reset');
+            const btnUndo = document.getElementById('btn-undo');
             
             if (isLocked) {
-                btnLock.innerText = "🔒 ロック中";
+                btnLock.innerText = "🔒 ロックしました";
                 btnLock.classList.add('locked');
-                btnLock.disabled = true;
-                btnReset.disabled = true;
+                btnLock.disabled = true; // ボタン無効化（クリック不可）
+                btnUndo.disabled = true;
                 canvas.classList.add('locked');
             } else {
-                btnLock.innerText = "🔓 線をロック";
+                btnLock.innerText = "🔓 横線をロックする";
                 btnLock.classList.remove('locked');
                 btnLock.disabled = false;
-                btnReset.disabled = false;
+                btnUndo.disabled = false;
                 canvas.classList.remove('locked');
             }
         }
 
-        // あみだ処理
-        function resetLines() {
+        function undoLine() {
             if (isLocked) return;
+            if (horizontalLines.length > 0) {
+                horizontalLines.pop();
+                draw();
+            }
+        }
+
+        function resetLines() {
             horizontalLines = [];
             animationPath = []; 
             revealed = new Array(participants).fill(false);
@@ -332,7 +295,7 @@
                 input.style.width = inputW + 'px';
                 const x = (i + 1) * columnWidth;
                 input.style.left = (x - (inputW / 2) - 2) + 'px'; 
-                input.style.top = (START_BTN_Y - 45) + 'px'; 
+                
                 inputsLayer.appendChild(input);
             }
         }
@@ -391,7 +354,6 @@
             }
         }
 
-        // クリック処理
         canvas.addEventListener('mousedown', handleClick);
         canvas.addEventListener('touchstart', (e) => {
             e.preventDefault();
