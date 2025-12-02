@@ -231,9 +231,7 @@
             const containerWidth = gameArea.clientWidth - 30; 
             const canvasWidth = Math.min(600, containerWidth);
             
-            // 画面高さから上部UI要素(約280px)を引いて計算
             const calcHeight = window.innerHeight - 280;
-            // 最小250px、最大800pxの範囲に収める
             const canvasHeight = Math.min(800, Math.max(250, calcHeight));
             
             canvas.width = canvasWidth;
