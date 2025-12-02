@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>あみだくじ</title>
+    <title>あみだくじアプリ</title>
     
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><rect width=%2264%22 height=%2264%22 fill=%22%23007bff%22 rx=%2212%22/><path d=%22M18 12v40M32 12v40M46 12v40M18 24h14M32 36h14M18 48h14%22 stroke=%22white%22 stroke-width=%224%22 stroke-linecap=%22round%22/></svg>">
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><rect width=%2264%22 height=%2264%22 fill=%22%23007bff%22 rx=%2212%22/><path d=%22M18 12v40M32 12v40M46 12v40M18 24h14M32 36h14M18 48h14%22 stroke=%22white%22 stroke-width=%224%22 stroke-linecap=%22round%22/></svg>">
@@ -16,20 +16,27 @@
             color: #333; 
             margin: 0; 
             padding: 10px; 
+            height: 100vh;
+            box-sizing: border-box;
+            overflow: hidden; /* 全体スクロール防止 */
         }
-        h1 { margin: 5px 0 15px 0; font-size: 20px; font-weight: bold; }
+        h1 { margin: 5px 0 10px 0; font-size: 20px; font-weight: bold; }
         
         #setup-area, #game-area { 
             margin: 0 auto; width: 100%; max-width: 600px; 
             background: white; padding: 15px; border-radius: 12px; 
             box-shadow: 0 2px 10px rgba(0,0,0,0.1); border: 1px solid #eee; 
             box-sizing: border-box; 
+            display: flex; flex-direction: column; /* 縦並びレイアウト */
+            max-height: 95vh; /* 画面内に収める */
         }
-        .hidden { display: none; }
+        .hidden { display: none !important; }
         
+        /* 設定画面 */
+        #setup-area { overflow-y: auto; } /* 設定画面はスクロール可 */
+
         label.section-title { font-weight: bold; display: block; margin-top: 20px; text-align: left; margin-left: 2%; font-size: 15px; }
         label.section-title:first-child { margin-top: 0; }
-        
         .small-size { font-size: 0.85em; font-weight: normal; color: #666; }
 
         label.radio-option { display: block; font-weight: normal; margin-bottom: 8px; cursor: pointer; font-size: 14px; }
@@ -37,39 +44,61 @@
             label.radio-option { display: inline-block; margin-right: 15px; margin-bottom: 0; }
         }
 
-        input[type="number"] { padding: 8px; width: 60px; text-align: center; font-size: 16px; border: 1px solid #ccc; border-radius: 6px; }
+        input[type="number"], select { padding: 8px; width: 80px; text-align: center; font-size: 16px; border: 1px solid #ccc; border-radius: 6px; background-color: #fff; }
         textarea { width: 95%; height: 80px; padding: 10px; margin: 5px 0; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; resize: vertical; }
         
+        /* ボタン共通 */
         button { 
-            padding: 10px 15px; background-color: #333; color: white; border: none; border-radius: 6px; 
-            cursor: pointer; font-size: 14px; margin: 5px 2px; font-weight: bold; transition: opacity 0.2s;
+            padding: 10px; background-color: #333; color: white; border: none; border-radius: 6px; 
+            cursor: pointer; font-size: 14px; font-weight: bold; transition: opacity 0.2s;
             min-height: 44px; 
         }
         button:hover { opacity: 0.8; }
         button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 1; }
         
-        button.shuffle-btn { background-color: #ff9800; font-size: 13px; padding: 6px 12px; min-height: 35px; } 
+        button.shuffle-btn { background-color: #ff9800; font-size: 13px; padding: 6px 12px; min-height: 35px; margin-top: 5px; } 
         button.secondary { background-color: #999; }
         
-        #btn-lock { background-color: #28a745; min-width: 150px; }
+        #btn-lock { background-color: #28a745; }
         #btn-lock.locked { background-color: #6c757d; cursor: default; opacity: 0.8; }
         
-        #btn-undo { min-width: 80px; }
+        /* 下部ボタンエリア（1行配置） */
+        .button-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            margin-top: 10px;
+            flex-shrink: 0; /* 縮小させない */
+        }
+        .button-row button {
+            flex: 1; /* 等幅 */
+            padding: 0 5px;
+            font-size: 13px; /* スマホで折り返さないよう少し小さく */
+            white-space: nowrap;
+        }
+
+        /* ヒント */
         .hint-container {
             background: #f8f9fa; padding: 10px; border-radius: 8px; 
-            margin-bottom: 5px; text-align: left;
+            margin-bottom: 5px; text-align: left; flex-shrink: 0;
         }
-        .hint-item { display: flex; align-items: center; font-size: 13px; color: #555; margin-bottom: 4px; line-height: 1.4; }
-        .hint-icon { font-size: 16px; margin-right: 8px; min-width: 20px; text-align: center; }
+        .hint-item { display: flex; align-items: center; font-size: 12px; color: #555; margin-bottom: 3px; line-height: 1.3; }
+        .hint-icon { font-size: 14px; margin-right: 6px; min-width: 18px; text-align: center; }
 
+        /* キャンバス */
         #canvas-container { 
             position: relative; 
-            margin: 30px auto 10px auto; 
+            margin: 25px auto 5px auto; 
             width: 100%; 
+            flex-grow: 1; /* 残りの高さを埋める */
+            display: flex;
+            align-items: flex-start; /* 上寄せ */
+            justify-content: center;
+            overflow: hidden;
         }
         canvas { 
             touch-action: none; cursor: pointer; background: #fff; 
-            display: block; margin: 0 auto; max-width: 100%;
+            display: block; width: 100%;
         }
         canvas.locked { cursor: default; }
 
@@ -83,6 +112,7 @@
         .name-input::placeholder { color: #ccc; }
         
         .setup-indent { text-align: left; margin-left: 2%; }
+        .note-text { color:#666; display:inline-block; margin-top:5px; text-align:left; line-height: 1.4; font-size: 0.85em; }
     </style>
 </head>
 <body>
@@ -92,7 +122,17 @@
     <div id="setup-area">
         <label class="section-title">参加人数 <span class="small-size">(2〜10人)</span></label>
         <div class="setup-indent" style="margin-top: 5px;">
-            <input type="number" id="num-participants" value="4" min="2" max="10"> 人
+            <select id="num-participants" onchange="updateWinnersOptions()">
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4" selected>4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+            </select> 人
         </div>
 
         <label class="section-title">結果</label>
@@ -108,15 +148,22 @@
         </div>
 
         <div id="input-mode-count" class="setup-indent">
-            <br>あたりの数: <input type="number" id="num-winners" value="1" min="1" max="10"> 本<br>
-            <small style="color:#666;">※残りは自動的に「はずれ」になります</small>
+            <br>あたりの数: 
+            <select id="num-winners">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </select> 本<br>
+            <small class="note-text">※残りは自動的に「はずれ」になります</small>
         </div>
 
         <div id="input-mode-custom" class="hidden setup-indent">
             <textarea id="result-options" placeholder="あたり&#13;&#10;はずれ&#13;&#10;..." onfocus="this.placeholder=''" onblur="if(this.value=='')this.placeholder='あたり\nはずれ\n...'"></textarea><br>
             <button class="shuffle-btn" onclick="shuffleInput()">🔀 内容をシャッフル</button><br>
-            <small style="color:#666; display:inline-block; margin-top:5px; text-align:left;">
-                ※改行区切り ※不足分は空欄
+            <small class="note-text">
+                ※改行区切りで入力してください<br>
+                ※人数分に足りない場合は空欄になります
             </small>
         </div>
 
@@ -126,10 +173,10 @@
 
     <div id="game-area" class="hidden">
         <div class="hint-container">
-            <div class="hint-item"><span class="hint-icon">✏️</span><span><b>名前を入力</b>（省略可）</span></div>
-            <div class="hint-item"><span class="hint-icon">👆</span><span><b>線と線の間</b>をクリックして横線を追加</span></div>
-            <div class="hint-item"><span class="hint-icon">🔒</span><span>全員が終えたら<b>ロック</b></span></div>
-            <div class="hint-item"><span class="hint-icon">🔢</span><span><b>数字</b>をクリックしてスタート</span></div>
+            <div class="hint-item"><span class="hint-icon">✏️</span><span>枠に<b>名前を入力</b></span></div>
+            <div class="hint-item"><span class="hint-icon">👆</span><span><b>線と線の間</b>をクリックして横棒追加</span></div>
+            <div class="hint-item"><span class="hint-icon">🔒</span><span>全員書いたら<b>ロック</b></span></div>
+            <div class="hint-item"><span class="hint-icon">🔢</span><span><b>丸</b>をクリックしてスタート</span></div>
         </div>
         
         <div id="canvas-container">
@@ -137,10 +184,10 @@
             <canvas id="amidaCanvas"></canvas>
         </div>
         
-        <div style="margin-top: 15px;">
-            <button id="btn-lock" onclick="toggleLock()">🔓 横線をロックする</button>
+        <div class="button-row">
+            <button id="btn-lock" onclick="toggleLock()">🔓 横線をロック</button>
             <button id="btn-undo" class="secondary" onclick="undoLine()">1つ戻る</button>
-            <button class="secondary" onclick="showSetup()">設定に戻る</button>
+            <button class="secondary" onclick="showSetup()">やり直す</button>
         </div>
     </div>
 
@@ -166,7 +213,31 @@
         let revealed = []; 
         let startChecked = []; 
 
-        // モード切替
+        window.addEventListener('DOMContentLoaded', () => {
+            updateWinnersOptions();
+        });
+
+        function updateWinnersOptions() {
+            const pSelect = document.getElementById('num-participants');
+            const wSelect = document.getElementById('num-winners');
+            const currentP = parseInt(pSelect.value);
+            const currentW = parseInt(wSelect.value);
+
+            wSelect.innerHTML = '';
+            for (let i = 1; i <= currentP; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.text = i;
+                wSelect.appendChild(option);
+            }
+
+            if (currentW <= currentP && currentW >= 1) {
+                wSelect.value = currentW;
+            } else {
+                wSelect.value = 1;
+            }
+        }
+
         function toggleMode(mode) {
             if (mode === 'count') {
                 document.getElementById('input-mode-count').classList.remove('hidden');
@@ -177,7 +248,6 @@
             }
         }
 
-        // シャッフル
         function shuffleInput() {
             const ta = document.getElementById('result-options');
             if (!ta.value.trim()) return;
@@ -189,12 +259,9 @@
             ta.value = lines.join('\n');
         }
 
-        // ゲーム初期化
         function initGame() {
             participants = parseInt(document.getElementById('num-participants').value);
-            if (participants < 2) participants = 2;
-            if (participants > 10) participants = 10;
-
+            
             results = [];
             const mode = document.querySelector('input[name="resultMode"]:checked').value;
 
@@ -219,15 +286,21 @@
             document.getElementById('setup-area').classList.add('hidden');
             document.getElementById('game-area').classList.remove('hidden');
 
+            // 画面高さを計算してキャンバスサイズを決定
+            // ヘッダー + ヒント + ボタン + パディング等の高さ = 約250px
+            // containerの幅に合わせる
             const containerWidth = gameArea.clientWidth - 30; 
             const canvasWidth = Math.min(600, containerWidth);
-            const calcHeight = window.innerHeight - 320;
-            const canvasHeight = Math.min(800, Math.max(250, calcHeight));
+            
+            // 利用可能な高さを計算
+            const uiHeight = 250; 
+            const availableHeight = window.innerHeight - uiHeight;
+            const canvasHeight = Math.min(800, Math.max(250, availableHeight));
             
             canvas.width = canvasWidth;
             canvas.height = canvasHeight;
             
-            if (canvasHeight < 500) {
+            if (canvasHeight < 400) {
                 START_BTN_Y = 25; MARGIN_TOP = 50; MARGIN_BOTTOM = 50;
             } else {
                 START_BTN_Y = 30; MARGIN_TOP = 60; MARGIN_BOTTOM = 60;
@@ -243,7 +316,6 @@
             document.getElementById('game-area').classList.add('hidden');
         }
 
-        // ロック制御
         function toggleLock() {
             if (isLocked) return; 
             isLocked = true;
@@ -261,7 +333,7 @@
                 btnUndo.disabled = true;
                 canvas.classList.add('locked');
             } else {
-                btnLock.innerText = "🔓 横線をロックする";
+                btnLock.innerText = "🔓 横線をロック";
                 btnLock.classList.remove('locked');
                 btnLock.disabled = false;
                 btnUndo.disabled = false;
@@ -269,7 +341,6 @@
             }
         }
 
-        // 1つ戻す
         function undoLine() {
             if (isLocked) return;
             if (horizontalLines.length > 0) {
@@ -278,7 +349,6 @@
             }
         }
 
-        // リセット
         function resetLines() {
             horizontalLines = [];
             animationPath = []; 
@@ -288,7 +358,6 @@
             draw();
         }
 
-        // 入力欄生成
         function generateNameInputs() {
             inputsLayer.innerHTML = '';
             const inputW = Math.min(50, Math.floor(columnWidth - 6)); 
@@ -306,7 +375,6 @@
             }
         }
 
-        // 描画
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.textAlign = 'center';
@@ -314,14 +382,13 @@
             for (let i = 0; i < participants; i++) {
                 const x = (i + 1) * columnWidth;
                 
-                // 丸
                 ctx.beginPath();
                 ctx.arc(x, START_BTN_Y, 14, 0, Math.PI * 2);
                 
                 if (startChecked[i]) {
-                    ctx.fillStyle = '#f8f8f8'; 
+                    ctx.fillStyle = '#f2f2f2'; 
                     ctx.fill();
-                    ctx.strokeStyle = '#ccc'; 
+                    ctx.strokeStyle = '#d0d0d0'; 
                     ctx.lineWidth = 2; 
                     ctx.stroke();
                     ctx.fillStyle = '#ccc';
@@ -338,11 +405,9 @@
                 ctx.textBaseline = 'middle';
                 ctx.fillText(i + 1, x, START_BTN_Y + 1);
 
-                // 縦線
                 ctx.strokeStyle = '#333'; ctx.lineWidth = 3;
                 ctx.beginPath(); ctx.moveTo(x, MARGIN_TOP); ctx.lineTo(x, canvas.height - MARGIN_BOTTOM); ctx.stroke();
 
-                // 結果
                 const boxW = Math.min(50, columnWidth - 6);
                 const boxX = x - (boxW / 2);
                 const boxY = canvas.height - (MARGIN_BOTTOM - 10);
@@ -358,14 +423,12 @@
                 }
             }
 
-            // 横線
             ctx.lineWidth = 3; ctx.strokeStyle = '#333';
             horizontalLines.forEach(l => {
                 const x1 = (l.col + 1) * columnWidth, x2 = (l.col + 2) * columnWidth;
                 ctx.beginPath(); ctx.moveTo(x1, l.y); ctx.lineTo(x2, l.y); ctx.stroke();
             });
 
-            // アニメーション線
             if (animationPath.length > 0) {
                 ctx.strokeStyle = '#e74c3c'; ctx.lineWidth = 5;
                 ctx.beginPath();
@@ -377,7 +440,6 @@
             }
         }
 
-        // イベント
         canvas.addEventListener('mousedown', handleClick);
         canvas.addEventListener('touchstart', (e) => {
             e.preventDefault();
