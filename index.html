@@ -54,8 +54,7 @@
         #btn-lock { background-color: #28a745; min-width: 150px; }
         #btn-lock.locked { background-color: #6c757d; cursor: default; opacity: 0.8; }
         
-        #btn-undo { font-size: 18px; padding: 10px 15px; min-width: 80px; }
-
+        #btn-undo { min-width: 80px; }
         .hint-container {
             background: #f8f9fa; padding: 10px; border-radius: 8px; 
             margin-bottom: 5px; text-align: left;
@@ -127,10 +126,10 @@
 
     <div id="game-area" class="hidden">
         <div class="hint-container">
-            <div class="hint-item"><span class="hint-icon">✏️</span><span>枠に<b>名前を入力</b></span></div>
-            <div class="hint-item"><span class="hint-icon">👆</span><span><b>線と線の間</b>をクリックして横棒追加</span></div>
-            <div class="hint-item"><span class="hint-icon">🔒</span><span>全員書いたら<b>ロック</b></span></div>
-            <div class="hint-item"><span class="hint-icon">🔢</span><span><b>丸</b>をクリックしてスタート</span></div>
+            <div class="hint-item"><span class="hint-icon">✏️</span><span><b>名前を入力</b>（省略可）</span></div>
+            <div class="hint-item"><span class="hint-icon">👆</span><span><b>線と線の間</b>をクリックして横線を追加</span></div>
+            <div class="hint-item"><span class="hint-icon">🔒</span><span>全員が終えたら<b>ロック</b></span></div>
+            <div class="hint-item"><span class="hint-icon">🔢</span><span><b>数字</b>をクリックしてスタート</span></div>
         </div>
         
         <div id="canvas-container">
@@ -140,7 +139,7 @@
         
         <div style="margin-top: 15px;">
             <button id="btn-lock" onclick="toggleLock()">🔓 横線をロックする</button>
-            <button id="btn-undo" class="secondary" onclick="undoLine()">↩</button>
+            <button id="btn-undo" class="secondary" onclick="undoLine()">1つ戻る</button>
             <button class="secondary" onclick="showSetup()">設定に戻る</button>
         </div>
     </div>
