@@ -221,8 +221,8 @@
 
             const containerWidth = gameArea.clientWidth - 30; 
             const canvasWidth = Math.min(600, containerWidth);
-            const availableHeight = window.innerHeight * 0.7;
-            const canvasHeight = Math.min(800, Math.max(450, availableHeight));
+            const calcHeight = window.innerHeight - 320;
+            const canvasHeight = Math.min(800, Math.max(250, calcHeight));
             
             canvas.width = canvasWidth;
             canvas.height = canvasHeight;
