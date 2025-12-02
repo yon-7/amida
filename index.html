@@ -11,34 +11,59 @@
 
     <style>
         /* CSS */
-        body { font-family: "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif; text-align: center; background-color: #fdfdfd; color: #333; margin: 0; padding: 20px; }
-        h1 { margin: 10px 0 25px 0; font-size: 24px; font-weight: bold; }
+        body { 
+            font-family: "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif; 
+            text-align: center; 
+            background-color: #fdfdfd; 
+            color: #333; 
+            margin: 0; 
+            padding: 15px; 
+        }
+        h1 { margin: 10px 0 20px 0; font-size: 24px; font-weight: bold; }
         
         /* コンテナ */
         #setup-area, #game-area { 
-            margin: 0 auto; max-width: 600px; background: white; padding: 30px 25px; 
-            border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #eee; 
+            margin: 0 auto; 
+            width: 100%; 
+            max-width: 600px; 
+            background: white; 
+            padding: 20px 15px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+            border: 1px solid #eee; 
+            box-sizing: border-box; 
         }
         .hidden { display: none; }
         
-        /* 設定項目ラベル */
-        label.section-title { font-weight: bold; display: block; margin-top: 25px; text-align: left; margin-left: 5%; font-size: 16px; }
+        /* 設定見出し (番号やコロンを削除してシンプルに) */
+        label.section-title { 
+            font-weight: bold; 
+            display: block; 
+            margin-top: 25px; 
+            text-align: left; 
+            margin-left: 2%; 
+            font-size: 16px; 
+        }
         label.section-title:first-child { margin-top: 0; }
         
         /* 補足テキストサイズ */
         .small-size { font-size: 0.85em; font-weight: normal; color: #666; }
 
         /* ラジオボタン */
-        label.radio-option { display: inline-block; font-weight: normal; margin-right: 15px; cursor: pointer; margin-top: 8px; }
+        label.radio-option { display: block; font-weight: normal; margin-bottom: 8px; cursor: pointer; }
+        @media (min-width: 400px) {
+            label.radio-option { display: inline-block; margin-right: 15px; margin-bottom: 0; }
+        }
 
         /* 入力要素 */
         input[type="number"] { padding: 10px; width: 80px; text-align: center; font-size: 18px; border: 1px solid #ccc; border-radius: 6px; }
-        textarea { width: 90%; height: 100px; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; resize: vertical; }
+        textarea { width: 95%; height: 100px; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; resize: vertical; }
         
         /* ボタン */
         button { 
-            padding: 12px 24px; background-color: #333; color: white; border: none; border-radius: 6px; 
-            cursor: pointer; font-size: 16px; margin: 10px 5px; font-weight: bold; transition: opacity 0.2s;
+            padding: 12px 20px; background-color: #333; color: white; border: none; border-radius: 6px; 
+            cursor: pointer; font-size: 16px; margin: 8px 4px; font-weight: bold; transition: opacity 0.2s;
+            min-height: 44px;
         }
         button:hover { opacity: 0.8; }
         button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 1; }
@@ -46,23 +71,47 @@
         button.shuffle-btn { background-color: #ff9800; font-size: 14px; padding: 8px 16px; } 
         button.secondary { background-color: #999; }
         
-        #btn-lock { background-color: #28a745; min-width: 180px; }
+        #btn-lock { background-color: #28a745; min-width: 160px; }
         #btn-lock.locked { background-color: #dc3545; }
 
-        /* キャンバス */
-        #canvas-container { position: relative; margin: 20px auto; width: 600px; max-width: 100%; overflow-x: auto; }
-        canvas { touch-action: none; cursor: pointer; background: #fff; display: block; margin: 0 auto; }
+        /* キャンバスコンテナ */
+        #canvas-container { 
+            position: relative; 
+            margin: 20px auto; 
+            width: 100%; 
+            overflow: hidden;
+        }
+        canvas { 
+            touch-action: none; 
+            cursor: pointer; 
+            background: #fff; 
+            display: block; 
+            margin: 0 auto; 
+            max-width: 100%;
+        }
         canvas.locked { cursor: default; }
 
         /* 名前入力 */
         .name-input {
-            position: absolute; top: 10px; width: 50px; padding: 4px; font-size: 12px; 
+            position: absolute; top: 10px; width: 44px; padding: 4px 2px; font-size: 11px; 
             text-align: center; border: 1px solid #ccc; border-radius: 4px; background: #fff;
         }
         .name-input::placeholder { color: #ccc; }
 
-        /* ヒント */
-        .hint { font-size: 0.9em; color: #555; margin-bottom: 20px; background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: left; line-height: 1.6; }
+        /* ヒント（リストの黒丸削除） */
+        .hint { 
+            font-size: 0.9em; color: #555; margin-bottom: 20px; 
+            background: #f8f9fa; padding: 15px; border-radius: 8px; 
+            text-align: left; line-height: 1.6;
+        }
+        .hint ul { 
+            margin: 0; 
+            padding-left: 0; /* インデント削除 */
+            list-style: none; /* 黒丸削除 */
+        }
+        .hint li { margin-bottom: 5px; }
+        
+        .setup-indent { text-align: left; margin-left: 2%; }
     </style>
 </head>
 <body>
@@ -72,12 +121,12 @@
     <!-- 設定画面 -->
     <div id="setup-area">
         <label class="section-title">参加人数 <span class="small-size">(2〜10人)</span></label>
-        <div style="text-align: left; margin-left: 5%; margin-top: 5px;">
+        <div class="setup-indent" style="margin-top: 5px;">
             <input type="number" id="num-participants" value="4" min="2" max="10"> 人
         </div>
 
         <label class="section-title">結果の設定</label>
-        <div style="text-align: left; margin-left: 5%;">
+        <div class="setup-indent" style="margin-top: 10px;">
             <label class="radio-option">
                 <input type="radio" name="resultMode" value="count" checked onclick="toggleMode('count')">
                 あたりの数を選ぶ
@@ -89,13 +138,13 @@
         </div>
 
         <!-- モード: あたりの数 -->
-        <div id="input-mode-count" style="text-align: left; margin-left: 5%;">
+        <div id="input-mode-count" class="setup-indent">
             <br>あたりの数: <input type="number" id="num-winners" value="1" min="1" max="10"> 本<br>
             <small style="color:#666;">※残りは自動的に「はずれ」になります</small>
         </div>
 
         <!-- モード: カスタム -->
-        <div id="input-mode-custom" class="hidden">
+        <div id="input-mode-custom" class="hidden setup-indent">
             <textarea id="result-options" placeholder="あたり&#13;&#10;はずれ&#13;&#10;..." onfocus="this.placeholder=''" onblur="if(this.value=='')this.placeholder='あたり\nはずれ\n...'"></textarea><br>
             <button class="shuffle-btn" onclick="shuffleInput()">🔀 内容をシャッフル</button><br>
             <small style="color:#666; display:inline-block; margin-top:5px; text-align:left;">
@@ -110,10 +159,14 @@
 
     <!-- ゲーム画面 -->
     <div id="game-area" class="hidden">
-        <p class="hint">
-            ✏️ 枠に<b>名前を入力</b>　👆 <b>線と線の間</b>をクリックして横棒追加<br>
-            🔒 全員書いたら<b>ロック</b>　🔢 <b>丸</b>をクリックしてスタート
-        </p>
+        <div class="hint">
+            <ul>
+                <li>✏️ 枠に<b>名前を入力</b></li>
+                <li>👆 <b>線と線の間</b>をクリックして横棒追加</li>
+                <li>🔒 全員書いたら<b>ロック</b></li>
+                <li>🔢 <b>丸</b>をクリックしてスタート</li>
+            </ul>
+        </div>
         
         <div id="canvas-container">
             <div id="name-inputs-layer"></div>
@@ -132,6 +185,7 @@
         const canvas = document.getElementById('amidaCanvas');
         const ctx = canvas.getContext('2d');
         const inputsLayer = document.getElementById('name-inputs-layer');
+        const gameArea = document.getElementById('game-area');
         
         const MARGIN_TOP = 100;
         const START_BTN_Y = 75; 
@@ -148,7 +202,7 @@
         let animX = 0, animY = 0; 
         let revealed = [];
 
-        // --- 設定画面処理 ---
+        // --- 設定画面の操作 ---
         function toggleMode(mode) {
             if (mode === 'count') {
                 document.getElementById('input-mode-count').classList.remove('hidden');
@@ -170,7 +224,7 @@
             ta.value = lines.join('\n');
         }
 
-        // --- ゲーム初期化 ---
+        // --- ゲーム開始（作成） ---
         function initGame() {
             participants = parseInt(document.getElementById('num-participants').value);
             if (participants < 2) participants = 2;
@@ -195,11 +249,17 @@
                 }
             }
 
+            // 画面表示切り替え
             isLocked = false;
             updateLockUI();
             document.getElementById('setup-area').classList.add('hidden');
             document.getElementById('game-area').classList.remove('hidden');
 
+            // --- レスポンシブ対応 ---
+            const containerWidth = gameArea.clientWidth - 30; 
+            const canvasWidth = Math.min(600, containerWidth);
+            canvas.width = canvasWidth;
+            
             columnWidth = canvas.width / (participants + 1);
             generateNameInputs();
             resetLines();
@@ -212,7 +272,7 @@
 
         // --- ロック機能 ---
         function toggleLock() {
-            if (isLocked) return;
+            if (isLocked) return; 
             if (confirm('線をロックしますか？\nこれ以降、線の追加・削除はできません。')) {
                 isLocked = true;
                 updateLockUI();
@@ -222,6 +282,7 @@
         function updateLockUI() {
             const btnLock = document.getElementById('btn-lock');
             const btnReset = document.getElementById('btn-reset');
+            
             if (isLocked) {
                 btnLock.innerText = "🔒 ロック中";
                 btnLock.classList.add('locked');
@@ -249,13 +310,16 @@
 
         function generateNameInputs() {
             inputsLayer.innerHTML = '';
+            const inputW = Math.min(50, columnWidth - 4); 
+
             for (let i = 0; i < participants; i++) {
                 const input = document.createElement('input');
                 input.type = 'text';
                 input.className = 'name-input';
                 input.placeholder = "なまえ";
-                input.style.width = '54px';
-                input.style.left = ((i + 1) * columnWidth - 27 - 4) + 'px'; 
+                input.style.width = inputW + 'px';
+                const x = (i + 1) * columnWidth;
+                input.style.left = (x - (inputW / 2) - 3) + 'px'; 
                 input.style.top = '10px'; 
                 inputsLayer.appendChild(input);
             }
@@ -281,15 +345,18 @@
                 ctx.beginPath(); ctx.moveTo(x, MARGIN_TOP); ctx.lineTo(x, canvas.height - MARGIN_BOTTOM); ctx.stroke();
 
                 // 結果
-                const boxX = x - 25, boxY = canvas.height - 55;
+                const boxW = Math.min(50, columnWidth - 5);
+                const boxX = x - (boxW / 2);
+                const boxY = canvas.height - 55;
+                
                 if (revealed[i]) {
                     if (results[i]) {
                         ctx.fillStyle = '#333'; ctx.font = 'bold 16px Arial';
-                        if (results[i].length > 4) ctx.font = 'bold 12px Arial';
+                        if (results[i].length > 4 || columnWidth < 40) ctx.font = 'bold 11px Arial';
                         ctx.fillText(results[i], x, boxY + 20);
                     }
                 } else {
-                    ctx.fillStyle = 'black'; ctx.fillRect(boxX, boxY, 50, 40);
+                    ctx.fillStyle = 'black'; ctx.fillRect(boxX, boxY, boxW, 40);
                 }
             }
 
