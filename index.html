@@ -51,10 +51,10 @@
         button.shuffle-btn { background-color: #ff9800; font-size: 13px; padding: 6px 12px; min-height: 35px; } 
         button.secondary { background-color: #999; }
         
-        /* ロックボタン */
         #btn-lock { background-color: #28a745; min-width: 150px; }
-        /* ロック時はグレーアウト */
         #btn-lock.locked { background-color: #6c757d; cursor: default; opacity: 0.8; }
+        
+        #btn-undo { font-size: 18px; min-width: 80px; }
 
         .hint-container {
             background: #f8f9fa; padding: 10px; border-radius: 8px; 
@@ -74,9 +74,9 @@
         }
         canvas.locked { cursor: default; }
 
-        /* 名前入力（位置はそのまま） */
         .name-input {
-            position: absolute; top: -25px; 
+            position: absolute; 
+            top: -22px; 
             padding: 2px; font-size: 11px; 
             text-align: center; border: 1px solid #ccc; border-radius: 4px; background: #fff;
             height: 20px; z-index: 10;
@@ -140,7 +140,7 @@
         
         <div style="margin-top: 15px;">
             <button id="btn-lock" onclick="toggleLock()">🔓 横線をロックする</button>
-            <button id="btn-undo" class="secondary" onclick="undoLine()">戻す</button>
+            <button id="btn-undo" class="secondary" onclick="undoLine()">↩</button>
             <button class="secondary" onclick="showSetup()">設定に戻る</button>
         </div>
     </div>
@@ -151,9 +151,8 @@
         const inputsLayer = document.getElementById('name-inputs-layer');
         const gameArea = document.getElementById('game-area');
         
-        // レイアウト変数
-        let MARGIN_TOP = 70;
-        let START_BTN_Y = 40; // 丸の位置を上に上げて名前欄に近づける
+        let MARGIN_TOP = 60;
+        let START_BTN_Y = 25; 
         let MARGIN_BOTTOM = 60;
         
         let participants = 4;
@@ -165,8 +164,10 @@
         let animationPath = []; 
         let currentPathIndex = 0; 
         let animX = 0, animY = 0; 
-        let revealed = [];
+        let revealed = []; 
+        let startChecked = []; 
 
+        // モード切替
         function toggleMode(mode) {
             if (mode === 'count') {
                 document.getElementById('input-mode-count').classList.remove('hidden');
@@ -177,6 +178,7 @@
             }
         }
 
+        // シャッフル
         function shuffleInput() {
             const ta = document.getElementById('result-options');
             if (!ta.value.trim()) return;
@@ -188,6 +190,7 @@
             ta.value = lines.join('\n');
         }
 
+        // ゲーム初期化
         function initGame() {
             participants = parseInt(document.getElementById('num-participants').value);
             if (participants < 2) participants = 2;
@@ -225,11 +228,10 @@
             canvas.width = canvasWidth;
             canvas.height = canvasHeight;
             
-            // レイアウト調整（丸の位置を上に）
             if (canvasHeight < 500) {
-                MARGIN_TOP = 60; START_BTN_Y = 35; MARGIN_BOTTOM = 50;
+                START_BTN_Y = 25; MARGIN_TOP = 50; MARGIN_BOTTOM = 50;
             } else {
-                MARGIN_TOP = 75; START_BTN_Y = 45; MARGIN_BOTTOM = 60;
+                START_BTN_Y = 30; MARGIN_TOP = 60; MARGIN_BOTTOM = 60;
             }
             
             columnWidth = canvas.width / (participants + 1);
@@ -242,6 +244,7 @@
             document.getElementById('game-area').classList.add('hidden');
         }
 
+        // ロック制御
         function toggleLock() {
             if (isLocked) return; 
             isLocked = true;
@@ -255,7 +258,7 @@
             if (isLocked) {
                 btnLock.innerText = "🔒 ロックしました";
                 btnLock.classList.add('locked');
-                btnLock.disabled = true; // ボタン無効化（クリック不可）
+                btnLock.disabled = true; 
                 btnUndo.disabled = true;
                 canvas.classList.add('locked');
             } else {
@@ -267,6 +270,7 @@
             }
         }
 
+        // 1つ戻す
         function undoLine() {
             if (isLocked) return;
             if (horizontalLines.length > 0) {
@@ -275,14 +279,17 @@
             }
         }
 
+        // リセット
         function resetLines() {
             horizontalLines = [];
             animationPath = []; 
             revealed = new Array(participants).fill(false);
+            startChecked = new Array(participants).fill(false);
             isAnimating = false;
             draw();
         }
 
+        // 入力欄生成
         function generateNameInputs() {
             inputsLayer.innerHTML = '';
             const inputW = Math.min(50, Math.floor(columnWidth - 6)); 
@@ -300,6 +307,7 @@
             }
         }
 
+        // 描画
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.textAlign = 'center';
@@ -307,12 +315,28 @@
             for (let i = 0; i < participants; i++) {
                 const x = (i + 1) * columnWidth;
                 
-                // 丸と番号
+                // 丸
                 ctx.beginPath();
                 ctx.arc(x, START_BTN_Y, 14, 0, Math.PI * 2);
-                ctx.fillStyle = 'white'; ctx.fill();
-                ctx.strokeStyle = '#333'; ctx.lineWidth = 2; ctx.stroke();
-                ctx.fillStyle = '#333'; ctx.font = 'bold 14px Arial'; ctx.textBaseline = 'middle';
+                
+                if (startChecked[i]) {
+                    ctx.fillStyle = '#f8f8f8'; 
+                    ctx.fill();
+                    ctx.strokeStyle = '#ccc'; 
+                    ctx.lineWidth = 2; 
+                    ctx.stroke();
+                    ctx.fillStyle = '#ccc';
+                } else {
+                    ctx.fillStyle = 'white'; 
+                    ctx.fill();
+                    ctx.strokeStyle = '#333'; 
+                    ctx.lineWidth = 2; 
+                    ctx.stroke();
+                    ctx.fillStyle = '#333';
+                }
+                
+                ctx.font = 'bold 14px Arial'; 
+                ctx.textBaseline = 'middle';
                 ctx.fillText(i + 1, x, START_BTN_Y + 1);
 
                 // 縦線
@@ -342,7 +366,7 @@
                 ctx.beginPath(); ctx.moveTo(x1, l.y); ctx.lineTo(x2, l.y); ctx.stroke();
             });
 
-            // アニメ
+            // アニメーション線
             if (animationPath.length > 0) {
                 ctx.strokeStyle = '#e74c3c'; ctx.lineWidth = 5;
                 ctx.beginPath();
@@ -354,6 +378,7 @@
             }
         }
 
+        // イベント
         canvas.addEventListener('mousedown', handleClick);
         canvas.addEventListener('touchstart', (e) => {
             e.preventDefault();
@@ -370,7 +395,8 @@
                 if (y > START_BTN_Y - 20) { 
                     for (let i = 0; i < participants; i++) {
                         if (Math.abs(x - (i + 1) * columnWidth) < 30) {
-                            startAnimation(i); return;
+                            startAnimation(i); 
+                            return;
                         }
                     }
                 }
@@ -390,6 +416,8 @@
         }
 
         function startAnimation(startIdx) {
+            startChecked[startIdx] = true;
+            
             animationPath = [];
             let cCol = startIdx, cY = MARGIN_TOP;
             animationPath.push({x: (cCol + 1) * columnWidth, y: cY});
