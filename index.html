@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>あみだくじアプリ</title>
+    <title>あみだくじ</title>
     
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><rect width=%2264%22 height=%2264%22 fill=%22%23007bff%22 rx=%2212%22/><path d=%22M18 12v40M32 12v40M46 12v40M18 24h14M32 36h14M18 48h14%22 stroke=%22white%22 stroke-width=%224%22 stroke-linecap=%22round%22/></svg>">
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><rect width=%2264%22 height=%2264%22 fill=%22%23007bff%22 rx=%2212%22/><path d=%22M18 12v40M32 12v40M46 12v40M18 24h14M32 36h14M18 48h14%22 stroke=%22white%22 stroke-width=%224%22 stroke-linecap=%22round%22/></svg>">
@@ -138,9 +138,9 @@
     <div id="game-area" class="hidden">
         <div class="hint-container">
             <div class="hint-item"><span class="hint-icon">✏️</span><span>枠に<b>名前を入力</b></span></div>
-            <div class="hint-item"><span class="hint-icon">👆</span><span><b>線と線の間</b>をクリックして横棒追加</span></div>
-            <div class="hint-item"><span class="hint-icon">🔒</span><span>誰かがスタートすると<b>編集不可</b>になります</span></div>
+            <div class="hint-item"><span class="hint-icon">👆</span><span>線と線の間をクリックして<b>横線を追加</b></span></div>
             <div class="hint-item"><span class="hint-icon">🔢</span><span><b>丸</b>をクリックしてスタート</span></div>
+            <div class="hint-item"><span class="hint-icon">🔒</span><span>誰かがスタート後は<b>横線の追加は不可</b></span></div>
         </div>
         
         <div id="canvas-container">
@@ -150,7 +150,7 @@
         
         <div class="button-row">
             <button id="btn-undo" class="secondary" onclick="undoLine()">↩</button>
-            <button class="secondary" onclick="showSetup()">設定に戻る</button>
+            <button class="secondary" onclick="showSetup()">やり直す</button>
         </div>
     </div>
 
@@ -231,10 +231,10 @@
             const containerWidth = gameArea.clientWidth - 30; 
             const canvasWidth = Math.min(600, containerWidth);
             
-            // 画面高さから上部の要素（約200px）を引いた値を基準にする
-            const calcHeight = window.innerHeight - 200; 
-            // 最小300px、最大800pxの範囲で調整
-            const canvasHeight = Math.min(800, Math.max(300, calcHeight));
+            // 画面高さから上部UI要素(約280px)を引いて計算
+            const calcHeight = window.innerHeight - 280;
+            // 最小250px、最大800pxの範囲に収める
+            const canvasHeight = Math.min(800, Math.max(250, calcHeight));
             
             canvas.width = canvasWidth;
             canvas.height = canvasHeight;
@@ -393,7 +393,6 @@
         }
 
         function startAnimation(startIdx) {
-            // 自動ロック
             if (!isLocked) {
                 isLocked = true;
                 document.getElementById('btn-undo').disabled = true;
