@@ -296,20 +296,38 @@
             for (let i = 0; i < participants; i++) {
                 const x = (i + 1) * columnWidth;
                 
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'bottom';
+                // --- スタート地点（マップピン） ---
                 
-                if (startChecked[i]) {
-                    ctx.fillStyle = '#ccc';
-                } else {
-                    ctx.fillStyle = '#333';
-                }
+                // ピンの色を設定（済みならグレー、未なら青）
+                const pinColor = startChecked[i] ? '#d0d0d0' : '#007bff';
+                const textColor = startChecked[i] ? '#aaa' : 'white';
                 
-                ctx.font = '24px sans-serif';
-                ctx.fillText('👤', x, START_BTN_Y + 18);
+                ctx.save(); // 現在の描画状態を保存
+
+                // ピンの形を描画
+                ctx.beginPath();
+                // ピンの頭の丸い部分
+                ctx.arc(x, START_BTN_Y, 14, Math.PI, Math.PI * 2); 
+                // ピンの下の三角形の部分
+                ctx.moveTo(x - 14, START_BTN_Y);
+                ctx.lineTo(x, START_BTN_Y + 20);
+                ctx.lineTo(x + 14, START_BTN_Y);
+                ctx.closePath();
                 
-                ctx.font = 'bold 12px Arial';
-                ctx.fillText(i + 1, x + 12, START_BTN_Y - 2);
+                // 塗りつぶしと影
+                ctx.fillStyle = pinColor;
+                ctx.shadowColor = 'rgba(0,0,0,0.2)';
+                ctx.shadowBlur = 4;
+                ctx.shadowOffsetY = 2;
+                ctx.fill();
+                
+                ctx.restore(); // 影などを元に戻す
+
+                // 中の数字
+                ctx.fillStyle = textColor;
+                ctx.font = 'bold 16px Arial'; 
+                ctx.textBaseline = 'middle';
+                ctx.fillText(i + 1, x, START_BTN_Y + 2);
 
                 ctx.strokeStyle = '#333'; ctx.lineWidth = 3;
                 ctx.beginPath(); ctx.moveTo(x, MARGIN_TOP); ctx.lineTo(x, canvas.height - MARGIN_BOTTOM); ctx.stroke();
