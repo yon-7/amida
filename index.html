@@ -137,9 +137,9 @@
 
     <div id="game-area" class="hidden">
         <div class="hint-container">
-            <div class="hint-item"><span class="hint-icon">✏️</span><span>チケットをえらんで<b>なまえ</b>を入力</span></div>
-            <div class="hint-item"><span class="hint-icon">👆</span><span><b>たて棒とたて棒のあいだ</b>をクリックしてよこ棒を追加</span></div>
-            <div class="hint-item"><span class="hint-icon">🔢</span><span>えらんだ<b>チケット</b>をクリックして開始</span></div>
+            <div class="hint-item"><span class="hint-icon">✏️</span><span>えらんで<b>なまえ</b>を入力</span></div>
+            <div class="hint-item"><span class="hint-icon">👆</span><span>あいだをクリックして<b>よこ線</b>を追加</span></div>
+            <div class="hint-item"><span class="hint-icon">🔢</span><span>チケットをクリックして<b>開始</b></span></div>
         </div>
         
         <div id="canvas-container">
@@ -230,7 +230,7 @@
             const containerWidth = gameArea.clientWidth - 30; 
             const canvasWidth = Math.min(600, containerWidth);
             
-            const calcHeight = window.innerHeight - 260;
+            const calcHeight = window.innerHeight - 240;
             const canvasHeight = Math.min(800, Math.max(250, calcHeight));
             
             canvas.width = canvasWidth;
