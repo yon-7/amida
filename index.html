@@ -296,40 +296,50 @@
             for (let i = 0; i < participants; i++) {
                 const x = (i + 1) * columnWidth;
                 
-                // --- スタート地点（チケット・タグ） ---
+                // --- スタート地点（絵文字風マップピン） ---
                 
-                // 色を設定（済みならグレー、未ならオレンジ）
-                const tagColor = startChecked[i] ? '#e0e0e0' : '#ff9800';
-                const textColor = startChecked[i] ? '#aaa' : 'white';
-                const holeColor = startChecked[i] ? 'white' : 'white';
+                // 色を設定
+                const pinColor = startChecked[i] ? '#d0d0d0' : '#e74c3c'; // 済:グレー, 未:赤
+                const pinShadow = startChecked[i] ? '#aaa' : '#c0392b';    // 影の色
+                const innerCircle = 'white';
 
-                const tagWidth = 36;
-                const tagHeight = 24;
-                const tagX = x - tagWidth / 2;
-                const tagY = START_BTN_Y - tagHeight / 2;
+                ctx.save();
+                
+                // 影
+                ctx.shadowColor = 'rgba(0,0,0,0.2)';
+                ctx.shadowBlur = 4;
+                ctx.shadowOffsetY = 2;
 
-                // タグ本体
-                ctx.fillStyle = tagColor;
+                // 外側の円（本体）
+                ctx.fillStyle = pinColor;
                 ctx.beginPath();
-                ctx.moveTo(tagX, tagY);
-                ctx.lineTo(tagX + tagWidth, tagY);
-                ctx.lineTo(tagX + tagWidth, tagY + tagHeight);
-                ctx.lineTo(tagX, tagY + tagHeight);
+                ctx.arc(x, START_BTN_Y, 15, 0, Math.PI * 2);
+                ctx.fill();
+
+                // 影をリセット
+                ctx.restore();
+
+                // 内側の白い円
+                ctx.fillStyle = innerCircle;
+                ctx.beginPath();
+                ctx.arc(x, START_BTN_Y, 7, 0, Math.PI * 2);
+                ctx.fill();
+
+                // 下の三角形
+                ctx.beginPath();
+                ctx.moveTo(x - 6, START_BTN_Y + 12);
+                ctx.lineTo(x, START_BTN_Y + 22);
+                ctx.lineTo(x + 6, START_BTN_Y + 12);
                 ctx.closePath();
+                ctx.fillStyle = pinShadow; // 影の色を流用して立体感を出す
                 ctx.fill();
 
-                // タグの穴
-                ctx.fillStyle = holeColor;
-                ctx.beginPath();
-                ctx.arc(tagX + 6, tagY + tagHeight / 2, 3, 0, Math.PI * 2);
-                ctx.fill();
-                
                 // 中の数字
-                ctx.fillStyle = textColor;
-                ctx.font = 'bold 14px Arial';
+                ctx.fillStyle = startChecked[i] ? '#aaa' : '#333';
+                ctx.font = 'bold 16px Arial';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.fillText(i + 1, x + 6, START_BTN_Y);
+                ctx.fillText(i + 1, x, START_BTN_Y);
 
                 ctx.strokeStyle = '#333'; ctx.lineWidth = 3;
                 ctx.beginPath(); ctx.moveTo(x, MARGIN_TOP); ctx.lineTo(x, canvas.height - MARGIN_BOTTOM); ctx.stroke();
