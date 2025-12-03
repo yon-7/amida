@@ -296,38 +296,40 @@
             for (let i = 0; i < participants; i++) {
                 const x = (i + 1) * columnWidth;
                 
-                // --- スタート地点（マップピン） ---
+                // --- スタート地点（チケット・タグ） ---
                 
-                // ピンの色を設定（済みならグレー、未なら青）
-                const pinColor = startChecked[i] ? '#d0d0d0' : '#007bff';
+                // 色を設定（済みならグレー、未ならオレンジ）
+                const tagColor = startChecked[i] ? '#e0e0e0' : '#ff9800';
                 const textColor = startChecked[i] ? '#aaa' : 'white';
-                
-                ctx.save(); // 現在の描画状態を保存
+                const holeColor = startChecked[i] ? 'white' : 'white';
 
-                // ピンの形を描画
+                const tagWidth = 36;
+                const tagHeight = 24;
+                const tagX = x - tagWidth / 2;
+                const tagY = START_BTN_Y - tagHeight / 2;
+
+                // タグ本体
+                ctx.fillStyle = tagColor;
                 ctx.beginPath();
-                // ピンの頭の丸い部分
-                ctx.arc(x, START_BTN_Y, 14, Math.PI, Math.PI * 2); 
-                // ピンの下の三角形の部分
-                ctx.moveTo(x - 14, START_BTN_Y);
-                ctx.lineTo(x, START_BTN_Y + 20);
-                ctx.lineTo(x + 14, START_BTN_Y);
+                ctx.moveTo(tagX, tagY);
+                ctx.lineTo(tagX + tagWidth, tagY);
+                ctx.lineTo(tagX + tagWidth, tagY + tagHeight);
+                ctx.lineTo(tagX, tagY + tagHeight);
                 ctx.closePath();
-                
-                // 塗りつぶしと影
-                ctx.fillStyle = pinColor;
-                ctx.shadowColor = 'rgba(0,0,0,0.2)';
-                ctx.shadowBlur = 4;
-                ctx.shadowOffsetY = 2;
+                ctx.fill();
+
+                // タグの穴
+                ctx.fillStyle = holeColor;
+                ctx.beginPath();
+                ctx.arc(tagX + 6, tagY + tagHeight / 2, 3, 0, Math.PI * 2);
                 ctx.fill();
                 
-                ctx.restore(); // 影などを元に戻す
-
                 // 中の数字
                 ctx.fillStyle = textColor;
-                ctx.font = 'bold 16px Arial'; 
+                ctx.font = 'bold 14px Arial';
+                ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.fillText(i + 1, x, START_BTN_Y + 2);
+                ctx.fillText(i + 1, x + 6, START_BTN_Y);
 
                 ctx.strokeStyle = '#333'; ctx.lineWidth = 3;
                 ctx.beginPath(); ctx.moveTo(x, MARGIN_TOP); ctx.lineTo(x, canvas.height - MARGIN_BOTTOM); ctx.stroke();
