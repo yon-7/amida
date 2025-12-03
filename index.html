@@ -296,28 +296,20 @@
             for (let i = 0; i < participants; i++) {
                 const x = (i + 1) * columnWidth;
                 
-                ctx.beginPath();
-                ctx.arc(x, START_BTN_Y, 14, 0, Math.PI * 2);
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'bottom';
                 
                 if (startChecked[i]) {
-                    ctx.fillStyle = '#f2f2f2'; 
-                    ctx.fill();
-                    ctx.strokeStyle = '#d0d0d0'; 
-                    ctx.lineWidth = 2; 
-                    ctx.stroke();
                     ctx.fillStyle = '#ccc';
                 } else {
-                    ctx.fillStyle = 'white'; 
-                    ctx.fill();
-                    ctx.strokeStyle = '#333'; 
-                    ctx.lineWidth = 2; 
-                    ctx.stroke();
                     ctx.fillStyle = '#333';
                 }
                 
-                ctx.font = 'bold 14px Arial'; 
-                ctx.textBaseline = 'middle';
-                ctx.fillText(i + 1, x, START_BTN_Y + 1);
+                ctx.font = '24px sans-serif';
+                ctx.fillText('👤', x, START_BTN_Y + 18);
+                
+                ctx.font = 'bold 12px Arial';
+                ctx.fillText(i + 1, x + 12, START_BTN_Y - 2);
 
                 ctx.strokeStyle = '#333'; ctx.lineWidth = 3;
                 ctx.beginPath(); ctx.moveTo(x, MARGIN_TOP); ctx.lineTo(x, canvas.height - MARGIN_BOTTOM); ctx.stroke();
