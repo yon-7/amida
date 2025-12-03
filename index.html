@@ -230,7 +230,9 @@
             const containerWidth = gameArea.clientWidth - 30; 
             const canvasWidth = Math.min(600, containerWidth);
             
-            const calcHeight = window.innerHeight - 280;
+            const hintContainer = document.querySelector(".hint-container");
+            const uiHeight = hintContainer.offsetHeight;
+            const calcHeight = window.innerHeight - uiHeight;
             const canvasHeight = Math.min(800, Math.max(250, calcHeight));
             
             canvas.width = canvasWidth;
