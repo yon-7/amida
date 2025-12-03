@@ -140,7 +140,7 @@
             <div class="hint-item"><span class="hint-icon">✏️</span><span><b>なまえ</b>を入力</span></div>
             <div class="hint-item"><span class="hint-icon">👆</span><span><b>たて線とたて線の間</b>をクリックしてよこ線を追加</span></div>
             <div class="hint-item"><span class="hint-icon">🔒</span><span>あみだを開始したら よこ線が追加できなくなります</span></div>
-            <div class="hint-item"><span class="hint-icon">🔢</span><span><b>丸で囲まれた数字</b>をクリックして開始してください</span></div>
+            <div class="hint-item"><span class="hint-icon">🎟️</span><span><b>チケット</b>をクリックしてスタート</span></div>
         </div>
         
         <div id="canvas-container">
@@ -295,17 +295,12 @@
             
             for (let i = 0; i < participants; i++) {
                 const x = (i + 1) * columnWidth;
-                
-                // --- スタート地点（半券がちぎれるチケット） ---
 
-                // 色を設定
-                const ticketColor = '#3498db'; // 青色
+                // --- チケット描写 ---
+                const ticketColor = '#3498db';
                 const textColor = 'white';
-                const disabledColor = '#3498db';
-                const disabledTextColor = 'white';
-
                 const fullWidth = 40;
-                const stubWidth = 12; // 半券部分の幅
+                const stubWidth = 12;
                 const mainWidth = fullWidth - stubWidth;
                 const ticketHeight = 26;
                 const ticketX = x - fullWidth / 2;
@@ -317,13 +312,11 @@
                 ctx.shadowBlur = 5;
                 ctx.shadowOffsetY = 2;
 
+                ctx.fillStyle = ticketColor;
+                ctx.beginPath();
+
                 if (startChecked[i]) {
-                    // --- 確認済み（半券がちぎれた後）---
                     const mainX = ticketX + stubWidth;
-                    
-                    // 本体部分のみ描画
-                    ctx.fillStyle = disabledColor;
-                    ctx.beginPath();
                     ctx.moveTo(mainX, ticketY);
                     ctx.lineTo(mainX + mainWidth, ticketY);
                     ctx.lineTo(mainX + mainWidth, ticketY + ticketHeight / 2 - notch);
@@ -332,21 +325,9 @@
                     ctx.lineTo(mainX + mainWidth, ticketY + ticketHeight);
                     ctx.lineTo(mainX, ticketY + ticketHeight);
                     ctx.closePath();
-                    ctx.fill();
-
-                    // 中の数字（ちぎれた後の中心に）
-                    ctx.fillStyle = disabledTextColor;
-                    ctx.font = 'bold 16px Arial';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillText(i + 1, mainX + mainWidth / 2, START_BTN_Y + 2);
-
-                } else {
-                    // --- 未確認（完全なチケット）---
                     
-                    // 本体を描画
-                    ctx.fillStyle = ticketColor;
-                    ctx.beginPath();
+                } else {
+                    
                     ctx.moveTo(ticketX, ticketY);
                     ctx.lineTo(ticketX + fullWidth, ticketY);
                     ctx.lineTo(ticketX + fullWidth, ticketY + ticketHeight / 2 - notch);
@@ -358,9 +339,11 @@
                     ctx.lineTo(ticketX + notch, ticketY + ticketHeight / 2);
                     ctx.lineTo(ticketX, ticketY + ticketHeight / 2 - notch);
                     ctx.closePath();
-                    ctx.fill();
+                }
+                ctx.fill();
+                ctx.restore();
 
-                    // 破線
+                if (!startChecked[i]) {
                     ctx.beginPath();
                     ctx.strokeStyle = 'rgba(255,255,255,0.6)';
                     ctx.lineWidth = 1.5;
@@ -369,16 +352,14 @@
                     ctx.lineTo(ticketX + stubWidth, ticketY + ticketHeight);
                     ctx.stroke();
                     ctx.setLineDash([]); 
-
-                    // 中の数字
-                    ctx.fillStyle = textColor;
-                    ctx.font = 'bold 16px Arial';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillText(i + 1, x + 6, START_BTN_Y + 2);
                 }
 
-                ctx.restore();
+                ctx.fillStyle = textColor;
+                ctx.font = 'bold 16px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                if(startChecked[i]) {
+                    ctx.fillText(i + 1, ticketX + stubWidth + mainWidth / 2, START_BTN_Y + 2);
 
                 ctx.strokeStyle = '#333'; ctx.lineWidth = 3;
                 ctx.beginPath(); ctx.moveTo(x, MARGIN_TOP); ctx.lineTo(x, canvas.height - MARGIN_BOTTOM); ctx.stroke();
