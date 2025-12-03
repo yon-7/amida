@@ -296,50 +296,62 @@
             for (let i = 0; i < participants; i++) {
                 const x = (i + 1) * columnWidth;
                 
-                // --- スタート地点（絵文字風マップピン） ---
-                
+                // --- スタート地点（ギザギザチケット風） ---
+
                 // 色を設定
-                const pinColor = startChecked[i] ? '#d0d0d0' : '#e74c3c'; // 済:グレー, 未:赤
-                const pinShadow = startChecked[i] ? '#aaa' : '#c0392b';    // 影の色
-                const innerCircle = 'white';
+                const ticketColor = startChecked[i] ? '#e9ecef' : '#3498db'; // 済:薄グレー, 未:青
+                const textColor = startChecked[i] ? '#adb5bd' : 'white';
+
+                const ticketWidth = 40;
+                const ticketHeight = 26;
+                const ticketX = x - ticketWidth / 2;
+                const ticketY = START_BTN_Y - ticketHeight / 2;
+                const notch = 3; // ギザギザの深さ
 
                 ctx.save();
-                
                 // 影
-                ctx.shadowColor = 'rgba(0,0,0,0.2)';
-                ctx.shadowBlur = 4;
+                ctx.shadowColor = 'rgba(0,0,0,0.15)';
+                ctx.shadowBlur = 5;
                 ctx.shadowOffsetY = 2;
 
-                // 外側の円（本体）
-                ctx.fillStyle = pinColor;
+                // 本体を描画
+                ctx.fillStyle = ticketColor;
                 ctx.beginPath();
-                ctx.arc(x, START_BTN_Y, 15, 0, Math.PI * 2);
+                // 上辺
+                ctx.moveTo(ticketX, ticketY);
+                ctx.lineTo(ticketX + ticketWidth, ticketY);
+                // 右辺（ギザギザ）
+                ctx.lineTo(ticketX + ticketWidth, ticketY + ticketHeight / 2 - notch);
+                ctx.lineTo(ticketX + ticketWidth - notch, ticketY + ticketHeight / 2);
+                ctx.lineTo(ticketX + ticketWidth, ticketY + ticketHeight / 2 + notch);
+                ctx.lineTo(ticketX + ticketWidth, ticketY + ticketHeight);
+                // 下辺
+                ctx.lineTo(ticketX, ticketY + ticketHeight);
+                // 左辺（ギザギザ）
+                ctx.lineTo(ticketX, ticketY + ticketHeight / 2 + notch);
+                ctx.lineTo(ticketX + notch, ticketY + ticketHeight / 2);
+                ctx.lineTo(ticketX, ticketY + ticketHeight / 2 - notch);
+                ctx.closePath();
                 ctx.fill();
 
-                // 影をリセット
                 ctx.restore();
 
-                // 内側の白い円
-                ctx.fillStyle = innerCircle;
+                // 破線（切り取り線）
                 ctx.beginPath();
-                ctx.arc(x, START_BTN_Y, 7, 0, Math.PI * 2);
-                ctx.fill();
-
-                // 下の三角形
-                ctx.beginPath();
-                ctx.moveTo(x - 6, START_BTN_Y + 12);
-                ctx.lineTo(x, START_BTN_Y + 22);
-                ctx.lineTo(x + 6, START_BTN_Y + 12);
-                ctx.closePath();
-                ctx.fillStyle = pinShadow; // 影の色を流用して立体感を出す
-                ctx.fill();
+                ctx.strokeStyle = startChecked[i] ? '#ced4da' : 'rgba(255,255,255,0.6)';
+                ctx.lineWidth = 1.5;
+                ctx.setLineDash([3, 2]); // 破線のパターン
+                ctx.moveTo(ticketX + 12, ticketY);
+                ctx.lineTo(ticketX + 12, ticketY + ticketHeight);
+                ctx.stroke();
+                ctx.setLineDash([]); // 破線をリセット
 
                 // 中の数字
-                ctx.fillStyle = startChecked[i] ? '#aaa' : '#333';
+                ctx.fillStyle = textColor;
                 ctx.font = 'bold 16px Arial';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.fillText(i + 1, x, START_BTN_Y);
+                ctx.fillText(i + 1, x + 6, START_BTN_Y);
 
                 ctx.strokeStyle = '#333'; ctx.lineWidth = 3;
                 ctx.beginPath(); ctx.moveTo(x, MARGIN_TOP); ctx.lineTo(x, canvas.height - MARGIN_BOTTOM); ctx.stroke();
