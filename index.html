@@ -296,62 +296,89 @@
             for (let i = 0; i < participants; i++) {
                 const x = (i + 1) * columnWidth;
                 
-                // --- スタート地点（ギザギザチケット風） ---
+                // --- スタート地点（半券がちぎれるチケット） ---
 
                 // 色を設定
-                const ticketColor = startChecked[i] ? '#e9ecef' : '#3498db'; // 済:薄グレー, 未:青
-                const textColor = startChecked[i] ? '#adb5bd' : 'white';
+                const ticketColor = '#3498db'; // 青色
+                const textColor = 'white';
+                const disabledColor = '#e9ecef';
+                const disabledTextColor = '#adb5bd';
 
-                const ticketWidth = 40;
+                const fullWidth = 40;
+                const stubWidth = 12; // 半券部分の幅
+                const mainWidth = fullWidth - stubWidth;
                 const ticketHeight = 26;
-                const ticketX = x - ticketWidth / 2;
+                const ticketX = x - fullWidth / 2;
                 const ticketY = START_BTN_Y - ticketHeight / 2;
-                const notch = 3; // ギザギザの深さ
+                const notch = 3; 
 
                 ctx.save();
-                // 影
                 ctx.shadowColor = 'rgba(0,0,0,0.15)';
                 ctx.shadowBlur = 5;
                 ctx.shadowOffsetY = 2;
 
-                // 本体を描画
-                ctx.fillStyle = ticketColor;
-                ctx.beginPath();
-                // 上辺
-                ctx.moveTo(ticketX, ticketY);
-                ctx.lineTo(ticketX + ticketWidth, ticketY);
-                // 右辺（ギザギザ）
-                ctx.lineTo(ticketX + ticketWidth, ticketY + ticketHeight / 2 - notch);
-                ctx.lineTo(ticketX + ticketWidth - notch, ticketY + ticketHeight / 2);
-                ctx.lineTo(ticketX + ticketWidth, ticketY + ticketHeight / 2 + notch);
-                ctx.lineTo(ticketX + ticketWidth, ticketY + ticketHeight);
-                // 下辺
-                ctx.lineTo(ticketX, ticketY + ticketHeight);
-                // 左辺（ギザギザ）
-                ctx.lineTo(ticketX, ticketY + ticketHeight / 2 + notch);
-                ctx.lineTo(ticketX + notch, ticketY + ticketHeight / 2);
-                ctx.lineTo(ticketX, ticketY + ticketHeight / 2 - notch);
-                ctx.closePath();
-                ctx.fill();
+                if (startChecked[i]) {
+                    // --- 確認済み（半券がちぎれた後）---
+                    const mainX = ticketX + stubWidth;
+                    
+                    // 本体部分のみ描画
+                    ctx.fillStyle = disabledColor;
+                    ctx.beginPath();
+                    ctx.moveTo(mainX, ticketY);
+                    ctx.lineTo(mainX + mainWidth, ticketY);
+                    ctx.lineTo(mainX + mainWidth, ticketY + ticketHeight / 2 - notch);
+                    ctx.lineTo(mainX + mainWidth - notch, ticketY + ticketHeight / 2);
+                    ctx.lineTo(mainX + mainWidth, ticketY + ticketHeight / 2 + notch);
+                    ctx.lineTo(mainX + mainWidth, ticketY + ticketHeight);
+                    ctx.lineTo(mainX, ticketY + ticketHeight);
+                    ctx.closePath();
+                    ctx.fill();
+
+                    // 中の数字（ちぎれた後の中心に）
+                    ctx.fillStyle = disabledTextColor;
+                    ctx.font = 'bold 16px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(i + 1, mainX + mainWidth / 2, START_BTN_Y + 2);
+
+                } else {
+                    // --- 未確認（完全なチケット）---
+                    
+                    // 本体を描画
+                    ctx.fillStyle = ticketColor;
+                    ctx.beginPath();
+                    ctx.moveTo(ticketX, ticketY);
+                    ctx.lineTo(ticketX + fullWidth, ticketY);
+                    ctx.lineTo(ticketX + fullWidth, ticketY + ticketHeight / 2 - notch);
+                    ctx.lineTo(ticketX + fullWidth - notch, ticketY + ticketHeight / 2);
+                    ctx.lineTo(ticketX + fullWidth, ticketY + ticketHeight / 2 + notch);
+                    ctx.lineTo(ticketX + fullWidth, ticketY + ticketHeight);
+                    ctx.lineTo(ticketX, ticketY + ticketHeight);
+                    ctx.lineTo(ticketX, ticketY + ticketHeight / 2 + notch);
+                    ctx.lineTo(ticketX + notch, ticketY + ticketHeight / 2);
+                    ctx.lineTo(ticketX, ticketY + ticketHeight / 2 - notch);
+                    ctx.closePath();
+                    ctx.fill();
+
+                    // 破線
+                    ctx.beginPath();
+                    ctx.strokeStyle = 'rgba(255,255,255,0.6)';
+                    ctx.lineWidth = 1.5;
+                    ctx.setLineDash([3, 2]);
+                    ctx.moveTo(ticketX + stubWidth, ticketY);
+                    ctx.lineTo(ticketX + stubWidth, ticketY + ticketHeight);
+                    ctx.stroke();
+                    ctx.setLineDash([]); 
+
+                    // 中の数字
+                    ctx.fillStyle = textColor;
+                    ctx.font = 'bold 16px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(i + 1, x + 6, START_BTN_Y + 2);
+                }
 
                 ctx.restore();
-
-                // 破線（切り取り線）
-                ctx.beginPath();
-                ctx.strokeStyle = startChecked[i] ? '#ced4da' : 'rgba(255,255,255,0.6)';
-                ctx.lineWidth = 1.5;
-                ctx.setLineDash([3, 2]); // 破線のパターン
-                ctx.moveTo(ticketX + 12, ticketY);
-                ctx.lineTo(ticketX + 12, ticketY + ticketHeight);
-                ctx.stroke();
-                ctx.setLineDash([]); // 破線をリセット
-
-                // 中の数字
-                ctx.fillStyle = textColor;
-                ctx.font = 'bold 16px Arial';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(i + 1, x + 6, START_BTN_Y + 2);
 
                 ctx.strokeStyle = '#333'; ctx.lineWidth = 3;
                 ctx.beginPath(); ctx.moveTo(x, MARGIN_TOP); ctx.lineTo(x, canvas.height - MARGIN_BOTTOM); ctx.stroke();
