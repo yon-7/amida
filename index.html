@@ -137,10 +137,10 @@
 
     <div id="game-area" class="hidden">
         <div class="hint-container">
-            <div class="hint-item"><span class="hint-icon">✏️</span><span>枠に<b>名前を入力</b></span></div>
-            <div class="hint-item"><span class="hint-icon">👆</span><span>線と線の間をクリックして<b>横線を追加</b></span></div>
-            <div class="hint-item"><span class="hint-icon">🔢</span><span>丸をクリックして<b>スタート</b></span></div>
-            <div class="hint-item"><span class="hint-icon">🔒</span><span>誰かがスタート後は<b>横線の追加は不可</b></span></div>
+            <div class="hint-item"><span class="hint-icon">✏️</span><span>枠に<b>名前</b>を入力</span></div>
+            <div class="hint-item"><span class="hint-icon">👆</span><span><b>タテ線とタテ線の間</b>をクリックしてヨコ線を追加</span></div>
+            <div class="hint-item"><span class="hint-icon">🔒</span><span>誰かがあみだを開始すると<b>編集不可</b>になります</span></div>
+            <div class="hint-item"><span class="hint-icon">🔢</span><span><b>丸で囲まれた数字</b>をクリックして開始してください</span></div>
         </div>
         
         <div id="canvas-container">
@@ -149,8 +149,8 @@
         </div>
         
         <div class="button-row">
-            <button id="btn-undo" class="secondary" onclick="undoLine()">1つ戻る</button>
-            <button class="secondary" onclick="showSetup()">最初から</button>
+            <button id="btn-undo" class="secondary" onclick="undoLine()">↩</button>
+            <button class="secondary" onclick="showSetup()">やり直す</button>
         </div>
     </div>
 
